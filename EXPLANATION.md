@@ -1,12 +1,10 @@
 # Brief Explanation (*Dataswitcher Tech Challenge*)
 
-
-
 ## Instructions
 
 - Follow the instructions on the `README.md`
 - Rename/Copy file `.env.example` to `.env`
-- Fill with container values
+- Fill with docker container values, like these :
     ```
     CSV_FOLDER="data"
 
@@ -15,6 +13,13 @@
     DATABASE_PORT=27017
     ```
 - Tests will run like the instructions on the `README.md`, *(9 tests/26 assertions)*.
+
+## Assumptions
+
+- `settings.csv`, key `type` is for classify company type of data
+- `journals.csv`, key `posted` (bool) do not control transactions import rule
+- `list-accounts.csv`, key `Set` (bool) do not control accounts import rule
+- There is no need to perserve the original id's/references
 
 ## Resume / Context
 
@@ -43,7 +48,7 @@ Initially, I decided to break down the problem into a series of smaller steps:
 
 ## Issues / Future Refactors
 
-- While I incorporated a fundamental benchmark for the sample operation, it's essential to devise a strategy to optimize memory consumption, resource utilization, and execution time when handling extensive datasets. This requires meticulously monitoring each phase and measuring critical aspects to facilitate in-depth analysis, ultimately guiding informed decisions.
+- While I incorporated a basic benchmark for the sample operation, it's essential to devise a strategy to optimize memory consumption, resource utilization, and execution time when handling extensive datasets. This requires meticulously monitoring each phase and measuring critical aspects to facilitate in-depth analysis, ultimately guiding informed decisions.
 
 - To achieve this, an expansion of test coverage is imperative. This entails implementing a mock file system and dedicating a separate database specifically for testing purposes. Such measures not only bolster the reliability of the codebase but also ensure robustness in various scenarios.
 
