@@ -1,0 +1,24 @@
+{
+    "accounts": [
+        { "keys": { "name": 1 }, "options": { "unique": true } },
+        { "keys": { "code": 1 } },
+        { "keys": { "balance": 1 } }
+    ],
+    "company_info": [
+        { "keys": { "name": 1 } },
+        { "keys": { "email": 1 } },
+        { "keys": { "type": 1 } },
+        { "keys": { "address": 1 } }
+    ],
+    "transactions": [
+        { "keys": { "ref": 1 }, "options": { "unique": true } },
+        { "keys": { "description": 1 } },
+        { "keys": { "type": 1 } }
+    ],
+    "transactions_lines": [
+        { "keys": { "transaction_ref": 1 } },
+        { "keys": { "account_code": 1 } },
+        { "keys": { "debit": 1 } },
+        { "keys": { "credit": 1 } }
+    ]
+}

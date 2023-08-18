@@ -1,0 +1,21 @@
+{
+    "require": {
+        "php": "^8.0",
+        "monolog/monolog": "*",
+        "phpunit/phpunit": "^9.5",
+        "abellion/xenus": "^0.19.2",
+        "mongodb/mongodb": "^1.16",
+        "vlucas/phpdotenv": "^5.5",
+        "league/csv": "^9.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Src\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    }
+}
