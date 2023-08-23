@@ -1,15 +1,13 @@
 <?php
 namespace Src\Traits;
 
-use Src\Models\Account;
+use Src\Services\AccountService;
 
 trait AccountTrait {
  
 
-    public string $accountModelName = 'Account';
-
-    protected string $noAccountCode = "UNKNOWN|ACCOUNT";
-    protected string $noAccountName = "Unrecognized Account Name";
+    protected string $noAccountCodeText = "UNKNOWN|ACCOUNT";
+    protected string $noAccountNameText = "Unrecognized Account Name";
     protected array $accountTargetCsvHeaders = [
         ['id', 'name', 'account_code'],
         ['account_code', 'set'],
@@ -17,7 +15,7 @@ trait AccountTrait {
     ];
 
     
-    public function logicForAccount(array $files) : array
+    public function logicForAccount(array $files, array $aux = null) : array
     {
         $results = [];
         $extractedData = [];
@@ -60,38 +58,38 @@ trait AccountTrait {
         foreach($data['accounts'] as $account)
         {
             $line['name'] = $account['name'];
-            $line['account_code'] = $account['account_code'];
+            $line['code'] = $account['account_code'];
             $line['balance'] = 0;
 
             $results[] = $line;
         }
 
-        $existingAccountCodes = array_column($results, 'account_code');
+        $existingAccountCodes = array_column($results, 'code');
         foreach ($data['list'] as $account) {
 
             if (!in_array($account['account_code'], $existingAccountCodes) && $account['account_code'] != "") {
 
                 $results[] = [
-                    "name"          => $this->noAccountName,
-                    "account_code"  => $account['account_code'],
+                    "name"          => $this->noAccountNameText,
+                    "code"          => $account['account_code'],
                     "balance"       => 0
                 ];
 
             }
         }
 
-        $existingAccountCodes = array_column($results, 'account_code');
+        $existingAccountCodes = array_column($results, 'code');
         foreach ($data['lines'] as $account) {
 
             if (!in_array($account['account_code'], $existingAccountCodes)) {
 
                 $results[] = [
                     "name"          => $account['account_code']
-                                            ? $this->noAccountName . ' [' . ucfirst(strtolower($account['account_code'])) . ']'
-                                            : $this->noAccountName,
-                    "account_code"  => $account['account_code']
+                                            ? '(' . ucfirst(strtolower($account['account_code'])) . ')'
+                                            : $this->noAccountNameText,
+                    "code"          => $account['account_code']
                                             ? $account['account_code']
-                                            : $this->noAccountCode,
+                                            : $this->noAccountCodeText,
                     "balance"       => 0
                 ];
 
@@ -104,26 +102,9 @@ trait AccountTrait {
     }
 
 
-    public function createAccount(array $csvData) : void
-    {
-
-        foreach($csvData as $item)
-        {
-            $data = new Account(
-                $item['name'],
-                $item['account_code'],
-                $item['balance'],
-            );
-
-            $data->save();
-        }
-
-    }
-
-
     public function updateAccountBalance() : void
     {
-        (new Account())->updateBalance();
+        (new AccountService())->updateBalance();
     }
 
 }

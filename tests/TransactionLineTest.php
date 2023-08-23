@@ -5,6 +5,7 @@ namespace Tests;
 use Src\CsvDataParser;
 use PHPUnit\Framework\TestCase;
 
+
 class TransactionLineTest extends TestCase
 {
 
@@ -17,8 +18,8 @@ class TransactionLineTest extends TestCase
         // Define sample input data
         $data = [
             'transactions' => [
-                ['id' => 'T001', 'original_id' => 1, 'account_code' => 'A001'],
-                ['id' => 'T002', 'original_id' => 2, 'account_code' => 'A002'],
+                ['ref' => 'T001', 'original_id' => 1, 'account_code' => 'A001'],
+                ['ref' => 'T002', 'original_id' => 2, 'account_code' => 'A002'],
             ],
             'lines' => [
                 ['journal_id' => 1, 'account_code' => 'A001', 'debit' => '$100', 'credit' => '$0'],
@@ -36,7 +37,6 @@ class TransactionLineTest extends TestCase
         $this->assertCount(2, $result);
         $this->assertEquals('T001', $result[0]['transaction_ref']);
         $this->assertEquals('T002', $result[1]['transaction_ref']);
-        //$this->assertEquals(TransactionLineTrait::NO_ACCOUNT_CODE, $result[1]['account_code']);
         $this->assertEquals(100.0, $result[0]['debit']);
         $this->assertEquals(50.0, $result[1]['credit']);
     }

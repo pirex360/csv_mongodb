@@ -1,13 +1,10 @@
 <?php
 namespace Src\Traits;
 
-use Src\Models\CompanyInfo;
-
 
 trait CompanyInfoTrait {
  
 
-    protected string $companyInfoModelName = "CompanyInfo";
     protected array $companyInfoCsvKeys =  ['name', 'email', 'location', 'type'];
     protected array $companyInfoTargetCsvHeaders = [
         ['name', 'email', 'location'],
@@ -16,7 +13,7 @@ trait CompanyInfoTrait {
 
 
 
-    public function logicForCompanyInfo(array $files) : array
+    public function logicForCompanyInfo(array $files, array $aux = null) : array
     {
         $extractedData = [];
 
@@ -71,24 +68,6 @@ trait CompanyInfoTrait {
 
     }
 
-
-    public function createCompanyInfo(array $csvData) : void
-    {
-
-        foreach($csvData as $item)
-        {
-            $data = new CompanyInfo(
-                $item['name'],
-                $item['email'],
-                $item['location'],
-                $item['type']
-            );
-
-            
-            $data->save();
-        }
-
-    }
 
 
 }

@@ -1,13 +1,10 @@
 <?php
 namespace Src\Traits;
 
-use Src\Models\TransactionLine;
-
 
 trait TransactionLineTrait {
  
 
-    public string $transactionLineModelName = "TransactionLine";
     protected array $transactionLineTargetCsvHeaders = [
         ['id', 'journal_id', 'account_code', 'debit', 'credit']
     ];
@@ -52,15 +49,7 @@ trait TransactionLineTrait {
     {
         $key = array_search($original_id, array_column($transactions, 'original_id'));
 
-        return $key !== false ? $transactions[$key]['id'] : null;
-    }
-
-
-    private function getAccountCodeFromTransaction(string $original_id, array $transactions) : string | null
-    {
-        $key = array_search($original_id, array_column($transactions, 'original_id'));
-
-        return $key !== false ? $transactions[$key]['account_code'] : null;
+        return $key !== false ? $transactions[$key]['ref'] : null;
     }
 
 
@@ -83,7 +72,7 @@ trait TransactionLineTrait {
                 $item['original_journal_id'] = $line['journal_id'];
                 $item['account_code'] = $line['account_code'] 
                                             ? $line['account_code'] 
-                                            : $this->noAccountCode;
+                                            : $this->noAccountCodeText;
                 $item['debit'] = $this->transformCurrency($line['debit']);
                 $item['credit'] = $this->transformCurrency($line['credit']);
 
@@ -99,21 +88,6 @@ trait TransactionLineTrait {
     }
 
 
-    public function createTransactionLine(array $csvData) : void
-    {
-        foreach($csvData as $item)
-        {
-            $data = new TransactionLine(
-                $item['transaction_ref'],
-                $item['account_code'],
-                $item['debit'],
-                $item['credit']
-            );
-
-            $data->save();
-        }
-
-    }
 
 
 

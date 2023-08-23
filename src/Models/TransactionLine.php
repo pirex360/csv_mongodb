@@ -7,22 +7,26 @@ use Src\Abstracts\Model;
 
 class TransactionLine extends Model 
 {
-    protected string $collectionName = "transactions_lines";
+    public string $collectionName = "transactions_lines";
+    public array $fillable = ["transaction_ref", "account_code", "debit", "credit"];
+
 
     // Constructor to initialize properties
     public function __construct(
-        int $transactionRef, 
-        string $accountCode, 
-        float $debit, 
-        float $credit
+        public int|array $transaction_ref = [], 
+        public string $account_code = "", 
+        public float $debit = 0.0, 
+        public float $credit = 0.0
     )
     {
         parent::__construct();
 
-        $this->transactionRef = $transactionRef;
-        $this->accountCode = $accountCode;
-        $this->debit = $debit;
-        $this->credit = $credit;
+        if (is_array($transaction_ref)) {
+            $this->fillFromArray($transaction_ref);
+        } else {
+            [$this->transaction_ref, $this->account_code, $this->debit, $this->credit] = [$transaction_ref, $account_code, $debit, $credit];
+        }
+
     }
 
 }

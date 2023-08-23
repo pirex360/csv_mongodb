@@ -7,22 +7,25 @@ use Src\Abstracts\Model;
 
 class CompanyInfo extends Model 
 {
-    protected string $collectionName = "company_info";
-
+    public string $collectionName = "company_info";
+    public array $fillable = ["name", "email", "address", "type"];
     
+
     public function __construct(
-        string $name = "", 
-        string $email = "", 
-        string $address = "", 
-        string $type = ""
+        public string|array $name = "", 
+        public string $email = "", 
+        public string $address = "", 
+        public string $type = ""
     )
     {
         parent::__construct();
 
-        $this->name = $name;
-        $this->email = $email;
-        $this->address = $address;
-        $this->type = $type;
+        if (is_array($name)) {
+            $this->fillFromArray($name);
+        } else {
+            [$this->name, $this->email, $this->address, $this->type] = [$name, $name, $email, $address, $type];
+        }
+
     }
 
     

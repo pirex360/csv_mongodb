@@ -1,17 +1,34 @@
 # Brief Explanation (*Dataswitcher Tech Challenge*)
 
+## Minor Revision Added
+
+I had a little time to make a small refactor in order to simplify the workflow logic. Here are the changes that were implemented:
+
+- Remove account update balance logic/method from model to a service class
+- Refactor on Models
+    - Constructor parameters now support singular values or an array
+    - Model save method can handle single and array of values
+- Added application name and version in .env file.
+
 ## Instructions
 
 - Follow the instructions on the `README.md`
 - Rename/Copy file `.env.example` to `.env`
 - Fill with docker container values, like these :
-    ```
+
+```
+
+    APP_NAME="DataSwitcher Challenge"
+    APP_VERSION="0.2"
+
     CSV_FOLDER="data"
 
     DATABASE_SERVER="dsw_challenge_mongodb"
     DATABASE_NAME="dataswitcher"
     DATABASE_PORT=27017
-    ```
+
+```
+
 - Tests will run like the instructions on the `README.md`, *(9 tests/26 assertions)*.
 
 ## Assumptions

@@ -2,15 +2,16 @@
 
 namespace Src;
 
+use ReflectionClass;
 use League\Csv\Reader;
 use Src\Traits\AccountTrait;
 use Src\Traits\CompanyInfoTrait;
-use Src\Traits\TransactionLineTrait;
 use Src\Traits\TransactionTrait;
+use Src\Traits\TransactionLineTrait;
 
 class CsvDataParser
 {
-    use CompanyInfoTrait, AccountTrait, TransactionTrait, TransactionLineTrait;
+    use AccountTrait, CompanyInfoTrait, TransactionTrait, TransactionLineTrait;
 
     private string $csvFolder;
     private array $csvFiles = [];
@@ -61,6 +62,7 @@ class CsvDataParser
 
         fclose($handle);
 
+
         // Check if the first data row is not empty
         return $data !== false && !empty(array_filter($data));
 
@@ -76,11 +78,16 @@ class CsvDataParser
 
     private function parseFromCsv() : array
     {
-        $data[$this->accountModelName] = $this->processData($this->accountModelName, $this->csvFiles);  
-        $data[$this->companyInfoModelName] = $this->processData($this->companyInfoModelName, $this->csvFiles);  
-        $data[$this->transactionModelName] = $this->processData($this->transactionModelName, $this->csvFiles);  
+        $data = [];
+        $usedModels = $this->getUsedModels();
 
-        $data[$this->transactionLineModelName] = $this->processData($this->transactionLineModelName, $this->csvFiles, $data[$this->transactionModelName]);  
+        foreach ($usedModels as $model) {
+            if ($model === "TransactionLine") {
+                $data[$model] = $this->processData($model, $this->csvFiles, $data['Transaction']);
+            } else {
+                $data[$model] = $this->processData($model, $this->csvFiles);
+            }
+        }
 
 
         return $data;
@@ -89,18 +96,15 @@ class CsvDataParser
 
     private function saveToCollections(array $data) : void
     {
-        $models = [
-            $this->accountModelName,
-            $this->companyInfoModelName,
-            $this->transactionModelName,
-            $this->transactionLineModelName,
-        ];
 
-        foreach ($models as $modelName) { 
-            if (!empty($data[$modelName])) { 
+        $usedModels = $this->getUsedModels();
 
-                $createMethod = 'create' . $modelName;
-                $this->$createMethod($data[$modelName]);
+        foreach ($usedModels as $model) { 
+
+            if (!empty($data[$model])) { 
+
+                $fullClass = "Src\\Models\\" . $model;
+                (new $fullClass)->save($data[$model]);
 
             }
         }
@@ -110,16 +114,11 @@ class CsvDataParser
 
     private function processData(string $model, array $files, array $aux = null) : array
     {
-
-        $data = match($model) {
-            $this->accountModelName => $this->logicForAccount($files),
-            $this->companyInfoModelName => $this->logicForCompanyInfo($files),
-            $this->transactionModelName => $this->logicForTransaction($files),
-            $this->transactionLineModelName => $this->logicForTransactionLine($files, $aux)
-        };
+        $method = "logicFor" . $model;
 
 
-        return $data;
+        return $this->$method($files, $aux);
+        
     }
 
     
@@ -143,6 +142,7 @@ class CsvDataParser
     {
         $filePath = $this->csvFolder . '/' . $file;
         
+
         return $this->csvReadFile($filePath);
     }
 
@@ -154,7 +154,28 @@ class CsvDataParser
                 return false;
             }
         }
+
+
         return true;
+    }
+
+    
+    public function getUsedModels() {
+
+        $usedModels = [];
+
+        $class = new ReflectionClass($this);
+        $traits = $class->getTraits();
+
+        foreach ($traits as $trait) {
+            $traitName = $trait->getName();
+            $parts = explode('\\', $traitName);
+            $usedModels[] =  str_replace("Trait","",end($parts));
+        }
+
+
+        return $usedModels;
+        
     }
 
 

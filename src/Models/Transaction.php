@@ -3,25 +3,31 @@
 namespace Src\Models;
 
 use Src\Abstracts\Model;
+use Src\Types\TransactionType;
 
 
 class Transaction extends Model 
 {
-    protected string $collectionName = "transactions";
+    public string $collectionName = "transactions";
+    public array $fillable = ["ref", "description", "type"];
 
-
+    
     // Constructor to initialize properties
     public function __construct(
-        int $ref, 
-        string $description, 
-        string $type
+        public int|array $ref = 0, 
+        public string $description = "", 
+        public string $type = TransactionType::JOURNAL
     )
     {
+
         parent::__construct();
-        
-        $this->ref = $ref;
-        $this->description = $description;
-        $this->type = $type;
+
+        if (is_array($ref)) {
+            $this->fillFromArray($ref);
+        } else {
+            [$this->ref, $this->description, $this->type] = [$ref, $description, $type];
+        }
+
     }
 
     

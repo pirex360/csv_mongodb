@@ -34,8 +34,8 @@ class AccountTest extends TestCase
 
 
         $accountLogicMethod = getPrivateMethod(CsvDataParser::class, 'accountProcessData');
-        $accountNoName = getPrivateProperty(CsvDataParser::class, 'noAccountName');
-        $accountNoCode =  getPrivateProperty(CsvDataParser::class, 'noAccountCode');
+        $accountNoName = getPrivateProperty(CsvDataParser::class, 'noAccountNameText');
+        $accountNoCode =  getPrivateProperty(CsvDataParser::class, 'noAccountCodeText');
 
         $result = $accountLogicMethod->invoke($csvDataParser, $data);
 
@@ -43,10 +43,10 @@ class AccountTest extends TestCase
         $this->assertCount(7, $result);
 
         $this->assertEquals('Account1', $result[0]['name']);
-        $this->assertEquals('A001', $result[0]['account_code']);
+        $this->assertEquals('A001', $result[0]['code']);
         $this->assertEquals(0, $result[0]['balance']);
         $this->assertEquals($accountNoName->getValue($csvDataParser), $result[3]['name']);
-        $this->assertEquals($accountNoCode->getValue($csvDataParser), $result[6]['account_code']);
+        $this->assertEquals($accountNoCode->getValue($csvDataParser), $result[6]['code']);
 
     }
 

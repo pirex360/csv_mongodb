@@ -33,7 +33,7 @@ class TransactionTest extends TestCase
 
 
         $transactionLogicMethod = getPrivateMethod(CsvDataParser::class, 'transactionProcessData');
-        $noDescriptionTransaction = getPrivateProperty(CsvDataParser::class, 'noDescriptionTransaction');
+        $noDescriptionTransactionText = getPrivateProperty(CsvDataParser::class, 'noDescriptionTransactionText');
  
         $result = $transactionLogicMethod->invoke($csvDataParser, $data);
 
@@ -42,7 +42,7 @@ class TransactionTest extends TestCase
         $this->assertEquals(TransactionType::INVOICE, $result[0]['type']);
         $this->assertEquals(TransactionType::INVOICE, $result[1]['type']);
         $this->assertNotEquals(TransactionType::INVOICE, $result[2]['type']);
-        $this->assertEquals($noDescriptionTransaction->getValue($csvDataParser), $result[2]['description']);
+        $this->assertEquals($noDescriptionTransactionText->getValue($csvDataParser), $result[2]['description']);
     }
 
 

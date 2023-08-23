@@ -1,14 +1,13 @@
 <?php
 namespace Src\Traits;
 
-use Src\Models\Transaction;
 use Src\Types\TransactionType;
 
 trait TransactionTrait {
  
 
-    public string $transactionModelName = "Transaction";
-    protected string $noDescriptionTransaction = "No Description Available";
+
+    protected string $noDescriptionTransactionText = "No Description Available";
     protected array $transactionTargetCsvHeaders = [
         ['id', 'journal_id', 'due'],
         ['id', 'description', 'posted'],
@@ -17,7 +16,7 @@ trait TransactionTrait {
 
 
 
-    public function logicForTransaction(array $files) : array
+    public function logicForTransaction(array $files, array $aux = null) : array
     {
         $extractedData = [];
         $results = [];
@@ -59,7 +58,7 @@ trait TransactionTrait {
        
         foreach($data['journals'] as $key => $journal)
         {
-            $line['id'] = $key+1;
+            $line['ref'] = $key+1;
             $line['original_id'] = $journal['id'];
             $line['description'] = $journal['description'];
             $line['type'] = TransactionType::JOURNAL;
@@ -81,13 +80,13 @@ trait TransactionTrait {
             
             if (!in_array($line['journal_id'], $originalIds)) {
                 $newLine = [
-                    'id'            => count($results)+1,
+                    'ref'            => count($results)+1,
                     'original_id'   => $line['journal_id'],
-                    'description'   => $this->noDescriptionTransaction,
+                    'description'   => $this->noDescriptionTransactionText,
                     'type'          => TransactionType::JOURNAL
                 ];
                 
-                $results[] = $newLine;
+               $results[] = $newLine;
             }
         });
         
@@ -97,23 +96,6 @@ trait TransactionTrait {
 
     }
 
-
-
-    public function createTransaction(array $csvData) : void
-    {
-
-        foreach($csvData as $item)
-        {
-            $data = new Transaction(
-                $item['id'],
-                $item['description'],
-                $item['type']
-            );
-
-            $data->save();
-        }
-
-    }
 
 
 

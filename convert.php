@@ -19,6 +19,8 @@ $log->info(':: Reading .env file...');
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
+$log->info('::' . $_ENV['APP_NAME'] . ' v.' . $_ENV['APP_VERSION'] );
+
 $log->info(':: Running Database Migrations...');
 CollectionsMigration::run();
 
@@ -27,11 +29,13 @@ $parser = new CsvDataParser($_ENV['CSV_FOLDER']);
 $files = $parser->getCsvFileNames();
 $log->info(' » Detected files with data: ' . implode(', ', $files));
 
-$log->info(':: Processing Data & Logic...');
+$log->info(':: Processing Data & Logic Started...');
 $parser->parse();
+$log->info(':: Processing Data & Logic Ended...');
 
 $log->info(':: Updating Account Balance Values...');
 $parser->updateAccountBalance();
+
 
 $elapsedTime = microtime(true) - $startTime;
 $log->info("Total execution time: {$elapsedTime} seconds");
