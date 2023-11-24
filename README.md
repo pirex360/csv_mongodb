@@ -1,4 +1,4 @@
-# Dataswitcher Tech Challenge
+# Tech Challenge
 
 ## Goal
 
